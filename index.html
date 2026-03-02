@@ -29,24 +29,27 @@
         </div>
     </div>
 
-    <script>
+        <script>
         async function loadArticles() {
+            const listElement = document.getElementById('article-list');
             try {
-                // Fetch the JSON file created by your Python script
-                const response = await fetch('./articles.json');
-                const articles = await response.json();
-                const listElement = document.getElementById('article-list');
+                // We use a cache-buster (?v=) to force GitHub to show the NEWEST data
+                const response = await fetch('./articles.json?v=' + new Date().getTime());
                 
-                if (articles.length === 0) {
-                    listElement.innerHTML = "<p class='text-center text-gray-500'>No articles found yet. Check back soon!</p>";
+                if (!response.ok) throw new Error('File not found');
+                
+                const articles = await response.json();
+                
+                if (!articles || articles.length === 0) {
+                    listElement.innerHTML = "<p class='text-center text-gray-500'>No articles found in the data file.</p>";
                     return;
                 }
 
                 listElement.innerHTML = articles.map(art => `
                     <a href="${art.url}" target="_blank" class="block article-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${art.date}</span>
-                            <span class="text-red-600 text-xs font-bold italic">WCVB →</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${art.date || 'Recently'}</span>
+                            <span class="text-red-600 text-xs font-bold italic underline">Read at WCVB →</span>
                         </div>
                         <h2 class="text-xl font-bold text-gray-800 leading-tight hover:text-red-600 transition-colors">
                             ${art.title}
@@ -54,10 +57,12 @@
                     </a>
                 `).join('');
             } catch (e) {
-                document.getElementById('article-list').innerHTML = "<p class='text-center text-red-500'>Failed to load articles. Ensure the script has run!</p>";
+                console.error(e);
+                listElement.innerHTML = `<p class='text-center text-red-500'>Error loading articles. Please try refreshing.</p>`;
             }
         }
         loadArticles();
     </script>
+
 </body>
 </html>
