@@ -1,0 +1,32 @@
+name: Daily Byline Update
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Runs daily at 8 AM UTC
+  workflow_dispatch: # Allows you to run it manually for testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run scraper
+        run: python scout.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "PhilTenser-Bot"
+          git config --global user.email "bot@philtenser.com"
+          git add articles.json
+          git commit -m "Auto-update: New articles found" || exit 0
+          git push
