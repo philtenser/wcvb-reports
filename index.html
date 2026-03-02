@@ -33,7 +33,7 @@
         async function loadArticles() {
             try {
                 // Fetch the JSON file created by your Python script
-                const response = await fetch('articles.json');
+                const response = await fetch('./articles.json');
                 const articles = await response.json();
                 const listElement = document.getElementById('article-list');
                 
