@@ -3,73 +3,98 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 import time
+import sys
 
 def verify_byline(url, headers):
-    """Visits the article page to check if Phil Tenser is in the byline."""
+    """Visits the article and checks for Phil Tenser anywhere in the byline area."""
     try:
-        response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code != 200:
-            return False
-        
+        # Added a slightly longer timeout for multi-page articles
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status() 
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # WCVB usually puts the byline in a span or div with 'author' or 'byline' in the class
-        # This search is broad to catch different layout versions
-        byline_elements = soup.find_all(lambda tag: tag.name in ['span', 'div', 'a'] and 
-                                       any(cls in str(tag.get('class', [])).lower() for cls in ['author', 'byline']))
-        
-        for element in byline_elements:
-            if "Phil Tenser" in element.get_text():
-                return True
-        
-        # Fallback: check if your name is anywhere in a typical byline string
-        page_text = soup.get_text()
-        if "By Phil Tenser" in page_text or "Reporting by Phil Tenser" in page_text:
+        # 1. Search specific byline/author tags and classes
+        # This handles cases where multiple authors are listed in separate spans/links
+        potential_containers = soup.find_all(['span', 'div', 'a', 'p', 'address'])
+        for container in potential_containers:
+            # Get class list as a string to check for author keywords
+            classes = str(container.get('class', [])).lower()
+            if any(key in classes for key in ['author', 'byline', 'writer', 'contributor']):
+                if "Phil Tenser" in container.get_text():
+                    return True
+
+        # 2. Fallback: Scan the first 3000 characters of the page text
+        # (This is a safety net for any layout changes or co-author lists)
+        page_start = soup.get_text()[:3000]
+        if "Phil Tenser" in page_start:
             return True
             
         return False
-    except:
+    except Exception as e:
+        print(f"Skipping verification for {url}: {e}")
         return False
 
 def scrape_phil_articles():
-    base_url = "https://www.wcvb.com/search?q=Phil+Tenser&page="
+    # Modern headers to look like a standard Mac/Chrome browser
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
     }
     
+    # We check 3 pages of search results to ensure we catch recent co-authored work
+    base_url = "https://www.wcvb.com/search?q=Phil+Tenser&page="
     all_articles = []
     seen_urls = set()
 
+    print(f"Starting Scout at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
     for page in range(1, 4):
-        print(f"Scouting page {page}...")
-        response = requests.get(f"{base_url}{page}", headers=headers)
-        if response.status_code != 200: break
+        print(f"Scouting search page {page}...")
+        try:
+            response = requests.get(f"{base_url}{page}", headers=headers, timeout=20)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            links = soup.find_all('a', href=True)
+            
+            if not links:
+                print("No links found on this page.")
+                break
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        links = soup.find_all('a', href=True)
+            for link in links:
+                url = link['href']
+                # Standard WCVB article pattern
+                if "/article/" in url and url not in seen_urls:
+                    full_url = "https://www.wcvb.com" + url if url.startswith('/') else url
+                    title = link.get_text(strip=True)
+                    
+                    # Only verify links that look like actual headlines (over 20 chars)
+                    if len(title) > 20:
+                        print(f"Verifying byline: {title[:40]}...")
+                        if verify_byline(full_url, headers):
+                            print("Match found! Adding to list.")
+                            all_articles.append({
+                                "title": title,
+                                "url": full_url,
+                                "date": "Recently Published",
+                                "scraped_at": datetime.now().isoformat()
+                            })
+                        seen_urls.add(url)
+            
+            # Brief pause to be respectful to the server
+            time.sleep(1.5)
 
-        for link in links:
-            url = link['href']
-            if "/article/" in url and url not in seen_urls:
-                full_url = "https://www.wcvb.com" + url if url.startswith('/') else url
-                title = link.get_text(strip=True)
-                
-                if len(title) > 20:
-                    print(f"Verifying byline for: {title[:30]}...")
-                    if verify_byline(full_url, headers):
-                        print("Match found!")
-                        all_articles.append({
-                            "title": title,
-                            "url": full_url,
-                            "date": "Recently Published",
-                            "scraped_at": datetime.now().isoformat()
-                        })
-                    seen_urls.add(url)
-        time.sleep(1)
+        except Exception as e:
+            print(f"Error on search page {page}: {e}")
+            break
 
-    with open('articles.json', 'w') as f:
-        json.dump(all_articles, f, indent=4)
-    print(f"Verified Scan complete. Found {len(all_articles)} articles by Phil Tenser.")
+    # Save the final list (even if empty to prevent front-end errors)
+    try:
+        with open('articles.json', 'w') as f:
+            json.dump(all_articles, f, indent=4)
+        print(f"Successfully saved {len(all_articles)} verified articles.")
+    except Exception as e:
+        print(f"Failed to save JSON: {e}")
 
 if __name__ == "__main__":
     scrape_phil_articles()
