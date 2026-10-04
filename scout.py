@@ -70,7 +70,7 @@ def scrape_phil_articles():
 
     newly_scraped_count = 0
 
-    for page in range(1, 6):
+    for page in range(1, 15):
         print(f"Searching WCVB Results Page {page}...")
         try:
             response = requests.get(f"{base_url}{page}", headers=headers, timeout=20)
