@@ -39,7 +39,6 @@ def verify_byline(url, headers):
 
 def extract_article_date(soup):
     """Try to find the actual publication date from meta tags or structured data."""
-    # Try meta tags common in news sites (OpenGraph, article:published_time, etc.)
     for meta_name in ['article:published_time', 'pubdate', 'publish-date', 'date']:
         meta = soup.find('meta', property=meta_name) or soup.find('meta', attrs={'name': meta_name})
         if meta and meta.get('content'):
@@ -47,16 +46,17 @@ def extract_article_date(soup):
                 return meta['content'][:10] # Grab YYYY-MM-DD
             except Exception:
                 pass
-    return datetime.now().strftime('%Y-%m-%d')
+    return None
 
 def scrape_phil_articles():
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     }
     
+    # DEEP SCAN: Search up to 20 pages to grab maximum history
     base_url = "https://www.wcvb.com/search?q=Phil+Tenser&page="
     
-    # 1. Load existing articles from disk so we preserve history
+    # Load existing articles from disk
     existing_articles = []
     if os.path.exists('articles.json'):
         try:
@@ -65,17 +65,35 @@ def scrape_phil_articles():
         except Exception as e:
             print(f"Warning: Could not load existing articles.json: {e}")
 
-    # Map existing articles by URL for quick lookup and deduplication
     article_map = {art['url']: art for art in existing_articles}
-
     newly_scraped_count = 0
 
-    for page in range(1, 15):
-        print(f"Searching WCVB Results Page {page}...")
+    # 1. RETROACTIVE DATE REPAIR: Fix any old items missing real dates
+    print("Checking existing archive for missing publication dates...")
+    for url, art in article_map.items():
+        if art.get('date') == "Verified Work" or not art.get('date'):
+            print(f"  Repairing date for: {art['title'][:40]}...")
+            try:
+                art_resp = requests.get(url, headers=headers, timeout=15)
+                art_soup = BeautifulSoup(art_resp.text, 'html.parser')
+                pub_date = extract_article_date(art_soup)
+                if pub_date:
+                    art['date'] = pub_date
+                    print(f"    ➡️ Found date: {pub_date}")
+                else:
+                    art['date'] = "2024-01-01" # Safe fallback if meta is missing
+                time.sleep(0.5)
+            except Exception as ex:
+                print(f"    [Error repairing date] {ex}")
+
+    # 2. DEEP SEARCH CRAWL
+    for page in range(1, 21):
+        print(f"Deep Scanning WCVB Results Page {page}...")
         try:
             response = requests.get(f"{base_url}{page}", headers=headers, timeout=20)
             soup = BeautifulSoup(response.text, 'html.parser')
             
+            found_on_page = 0
             for link in soup.find_all('a', href=True):
                 url = link['href']
                 if "/article/" in url:
@@ -83,7 +101,6 @@ def scrape_phil_articles():
                     title = link.get_text(strip=True)
                     
                     if len(title) > 20:
-                        # If we already have this URL in our historical JSON, skip expensive re-scraping
                         if full_url in article_map:
                             continue
                             
@@ -93,7 +110,7 @@ def scrape_phil_articles():
                             art_soup = BeautifulSoup(art_resp.text, 'html.parser')
                             
                             if verify_byline(full_url, headers):
-                                pub_date = extract_article_date(art_soup)
+                                pub_date = extract_article_date(art_soup) or "2024-01-01"
                                 article_map[full_url] = {
                                     "title": title,
                                     "url": full_url,
@@ -101,11 +118,17 @@ def scrape_phil_articles():
                                     "scraped_at": datetime.now().isoformat()
                                 }
                                 newly_scraped_count += 1
+                                found_on_page += 1
                                 print("  ✅ NEW MATCH ADDED")
                         except Exception as ex:
                             print(f"  [Error fetching article] {ex}")
                             
             time.sleep(1)
+            # If a search page returns zero new matches or links, we've likely hit the end of the search index
+            if found_on_page == 0 and page > 5:
+                print(f"No new unique articles found on page {page}. Ending deep search early.")
+                break
+                
         except Exception as e:
             print(f"Search error: {e}")
             break
