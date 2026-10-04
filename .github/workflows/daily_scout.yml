@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
 
-  - name: Run backfill script
+      - name: Run backfill script
         run: python backfill.py
 
       - name: Commit and push changes
