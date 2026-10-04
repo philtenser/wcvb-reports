@@ -25,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
 
-      - name: Run backfill script
-        run: python backfill.py
+      - name: Run author feed scout
+        run: python scout.py
 
       - name: Commit and push changes
         run: |
