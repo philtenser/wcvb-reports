@@ -12,6 +12,18 @@
         "scraped_at": "2026-10-03T13:00:51.124889"
     },
     {
+        "title": "Suspect faces charges after sexual assault inside Planet Fitness locker room in Cambridge, Mass.",
+        "url": "https://www.wcvb.com/article/planet-fitness-rape-kidnapping-cambridge-laquan-holland-oct-2/73994276",
+        "date": "2026-10-02",
+        "scraped_at": "2026-10-04T13:29:30.938748"
+    },
+    {
+        "title": "Judge lays out plan for jury selection, opening statements in final hearing before Farwell's trial",
+        "url": "https://www.wcvb.com/article/matthew-farwell-case-massachusetts-hearing/73990129",
+        "date": "2026-10-02",
+        "scraped_at": "2026-10-04T13:29:31.022688"
+    },
+    {
         "title": "Lexington voters approve $660M high school project",
         "url": "https://www.wcvb.com/article/lexington-voters-approve-660m-high-school-project/69672884",
         "date": "2025-12-09",
@@ -112,6 +124,12 @@
         "url": "https://www.wcvb.com/article/boston-marathon-photo-bridge-construction/64533050",
         "date": "2025-04-20",
         "scraped_at": "2026-10-03T13:01:03.452291"
+    },
+    {
+        "title": "Verified Article",
+        "url": "https://www.wcvb.com/article/how-to-license-footage-from-wcvb-and-hearst-television/64353274",
+        "date": "2025-04-15",
+        "scraped_at": "2026-10-04T13:29:31.287471"
     },
     {
         "title": "Boston Marathon prize money: Purse updated as wheelchair prizes increased for 2025",
@@ -250,5 +268,17 @@
         "url": "https://www.wcvb.com/article/ibram-x-kendi-center-antiracist-research-boston-university-investigation/45245304",
         "date": "2023-09-21",
         "scraped_at": "2026-10-03T13:01:14.211672"
+    },
+    {
+        "title": "Hearst Television News Policy Statements",
+        "url": "https://www.wcvb.com/article/hearst-television-news-policy-statements/14471973",
+        "date": "2017-12-20",
+        "scraped_at": "2026-10-04T13:29:30.337605"
+    },
+    {
+        "title": "Contact Us",
+        "url": "https://www.wcvb.com/article/contact-us/3618504",
+        "date": "2016-09-21",
+        "scraped_at": "2026-10-04T13:29:30.420824"
     }
 ]
