@@ -3,7 +3,7 @@ name: Daily Byline Update
 on:
   schedule:
     - cron: '0 8 * * *' # Runs daily at 8 AM UTC
-  workflow_dispatch: # Allows you to run it manually whenever you want
+  workflow_dispatch: # Allows manual triggers anytime
 
 permissions:
   contents: write # Grants the bot permission to save files to your repo
@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetches full history so rebase works properly
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: pip install requests beautifulsoup4
@@ -35,6 +35,5 @@ jobs:
           git add articles.json
           # Only commit if the file actually changed
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: New articles found"
-          # Pull any changes you made in the browser first, then stack the bot's work on top
           git pull --rebase origin main
           git push origin main
