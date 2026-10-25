@@ -1,23 +1,5 @@
 [
     {
-        "title": "Two people injured in three-alarm fire in Allston",
-        "url": "https://www.wcvb.com/article/three-alarm-fire-allston/74236996",
-        "date": "2026-10-24",
-        "scraped_at": "2026-10-24T12:22:25.465531"
-    },
-    {
-        "title": "Brigham and Women's Hospital nurses vote to reject hospital's contract offer",
-        "url": "https://www.wcvb.com/article/nurses-vote-reject-hospitals-contract-offer/74236701",
-        "date": "2026-10-24",
-        "scraped_at": "2026-10-24T12:22:25.608751"
-    },
-    {
-        "title": "Major reforms to Massachusetts State Police training academy announced after recruit death",
-        "url": "https://www.wcvb.com/article/massachusetts-state-police-academy-reforms-october-23/74229169",
-        "date": "2026-10-23",
-        "scraped_at": "2026-10-23T12:59:14.734772"
-    },
-    {
         "title": "Man dies in Haverhill after being struck by SUV",
         "url": "https://www.wcvb.com/article/man-dies-in-haverhill-after-being-struck-by-suv/74233830",
         "date": "2026-10-23",
@@ -156,12 +138,6 @@
         "scraped_at": "2026-10-17T11:53:20.706598"
     },
     {
-        "title": "Police respond to bomb threat at Billerica Memorial High School",
-        "url": "https://www.wcvb.com/article/police-respond-to-bomb-threat-at-billerica-high-school-october-15/74144561",
-        "date": "2026-10-15",
-        "scraped_at": "2026-10-15T12:59:12.087931"
-    },
-    {
         "title": "History quiz: How well do you know Massachusetts governors?",
         "url": "https://www.wcvb.com/article/governor-history-quiz-massachusetts-oct-2026/74120039",
         "date": "2026-10-15",
@@ -270,12 +246,6 @@
         "scraped_at": "2026-10-09T14:49:40.193239"
     },
     {
-        "title": "Man sought in death of mother in Reading, Massachusetts home",
-        "url": "https://www.wcvb.com/article/reading-massachusetts-crime-scene-center-avenue/74078666",
-        "date": "2026-10-08",
-        "scraped_at": "2026-10-08T15:05:21.306646"
-    },
-    {
         "title": "Potential jurors for Matthew Farwell trial in Sandra Birchmore's death to return to federal court Thursday",
         "url": "https://www.wcvb.com/article/matthew-farwell-sandra-birchmore-trial-oct-8/74076646",
         "date": "2026-10-08",
@@ -304,12 +274,6 @@
         "url": "https://www.wcvb.com/article/nasa-responds-patriots-quarterback-drake-maye-moon-landing-skepticism/74082800",
         "date": "2026-10-08",
         "scraped_at": "2026-10-09T14:49:40.802487"
-    },
-    {
-        "title": "Men accused of stabbing off-duty police detective in New York arrested in Lynn, Massachusetts",
-        "url": "https://www.wcvb.com/article/men-accused-of-stabbing-off-duty-police-detective-in-new-york-arrested-in-lynn-massachusetts/74065536",
-        "date": "2026-10-07",
-        "scraped_at": "2026-10-07T14:57:01.614452"
     },
     {
         "title": "Day 2 of jury selection in trial of Matthew Farwell for death of Sandra Birchmore",
@@ -642,12 +606,6 @@
         "scraped_at": "2026-10-03T13:01:03.452291"
     },
     {
-        "title": "Verified Article",
-        "url": "https://www.wcvb.com/article/how-to-license-footage-from-wcvb-and-hearst-television/64353274",
-        "date": "2025-04-15",
-        "scraped_at": "2026-10-04T13:29:31.287471"
-    },
-    {
         "title": "Boston Marathon prize money: Purse updated as wheelchair prizes increased for 2025",
         "url": "https://www.wcvb.com/article/boston-marathon-2025-prize-money/64092615",
         "date": "2025-04-03",
@@ -784,17 +742,5 @@
         "url": "https://www.wcvb.com/article/ibram-x-kendi-center-antiracist-research-boston-university-investigation/45245304",
         "date": "2023-09-21",
         "scraped_at": "2026-10-03T13:01:14.211672"
-    },
-    {
-        "title": "Hearst Television News Policy Statements",
-        "url": "https://www.wcvb.com/article/hearst-television-news-policy-statements/14471973",
-        "date": "2017-12-20",
-        "scraped_at": "2026-10-04T13:29:30.337605"
-    },
-    {
-        "title": "Contact Us",
-        "url": "https://www.wcvb.com/article/contact-us/3618504",
-        "date": "2016-09-21",
-        "scraped_at": "2026-10-04T13:29:30.420824"
     }
 ]
